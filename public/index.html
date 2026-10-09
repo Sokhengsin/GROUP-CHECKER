@@ -1,1 +1,332 @@
 
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="HENGGOLIVER Roblox community membership checker." />
+  <title>HENGGOLIVER — Community Checker</title>
+  <style>
+    :root{
+      --black:#000;
+      --panel:#090909;
+      --panel2:#0d0d0d;
+      --white:#fff;
+      --muted:#a3a3a3;
+      --line:#242424;
+      --green:#22c55e;
+      --green2:#16a34a;
+      --red:#ef4444;
+      --amber:#f59e0b;
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:var(--black);
+      color:var(--white);
+    }
+    a{color:inherit;text-decoration:none}
+    .wrap{width:min(920px,calc(100% - 36px));margin:0 auto}
+    header{
+      border-bottom:1px solid var(--line);
+      background:#000;
+      position:sticky;top:0;z-index:10;
+    }
+    nav{
+      min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:18px;
+    }
+    .brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:.3px}
+    .mark{
+      width:38px;height:38px;border:1px solid #333;border-radius:12px;
+      display:grid;place-items:center;color:#000;background:var(--green);font-weight:1000;
+    }
+    .navlinks{display:flex;gap:18px;color:#aaa;font-size:14px}
+    .hero{padding:84px 0 34px;text-align:center}
+    .eyebrow{color:var(--green);font-size:13px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}
+    h1{font-size:clamp(42px,8vw,78px);line-height:1;margin:14px auto 18px;letter-spacing:-3px;max-width:850px}
+    .green{color:var(--green)}
+    .lead{max-width:650px;margin:0 auto;color:var(--muted);font-size:18px;line-height:1.7}
+    .card{
+      background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+      padding:28px;margin:30px 0;box-shadow:0 24px 70px rgba(0,0,0,.4);
+    }
+    label{display:block;font-size:13px;font-weight:800;margin:0 0 8px}
+    .stack{display:grid;grid-template-columns:1fr;gap:16px}
+    code{color:var(--green);font-size:.92em}
+    h2{margin:10px 0 12px}
+    .card p.muted{line-height:1.7}
+    input{
+      width:100%;border:1px solid #2b2b2b;border-radius:12px;background:#030303;color:#fff;
+      padding:15px 14px;font-size:16px;outline:none;
+    }
+    input:focus{border-color:var(--green)}
+    button{
+      width:100%;margin-top:18px;border:0;border-radius:12px;padding:15px 18px;
+      background:var(--green);color:#001b08;font-weight:900;font-size:16px;cursor:pointer;
+    }
+    button:hover{background:#2bda69}
+    button:disabled{opacity:.55;cursor:not-allowed}
+    .result{display:none;margin-top:20px;border:1px solid var(--line);border-radius:16px;padding:20px;background:#050505}
+    .result.show{display:block}
+    .status{font-size:26px;font-weight:900;margin-bottom:6px}
+    .status.ok{color:var(--green)}
+    .status.bad{color:var(--red)}
+    .status.wait{color:var(--amber)}
+    .muted{color:var(--muted)}
+    .details{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:18px}
+    .detail{border:1px solid #202020;border-radius:12px;padding:13px;background:#080808}
+    .detail small{display:block;color:#888;margin-bottom:4px}
+    .detail strong{overflow-wrap:anywhere}
+    .notice{margin-top:18px;color:#8f8f8f;font-size:13px;line-height:1.6}
+    .error{color:#ff8585}
+    footer{border-top:1px solid var(--line);margin-top:70px;padding:30px 0 45px;color:#777;font-size:13px;text-align:center}
+    @media(max-width:650px){
+      .details{grid-template-columns:1fr}
+      .navlinks{display:none}
+      .hero{padding-top:58px}
+      h1{letter-spacing:-2px}
+      .card{padding:20px}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="wrap">
+      <a class="brand" href="/">
+        <span class="mark">H</span>
+        <span>HENGGOLIVER</span>
+      </a>
+      <div class="navlinks">
+        <a href="#checker">Checker</a>
+        <a href="#about">How it works</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">Roblox Community Checker</div>
+      <h1>Eligibility <span class="green">Checker</span></h1>
+      <p class="lead">
+        Check whether a Roblox account is currently a member of a public Roblox community,
+        and estimate the configured membership-age requirement when a trustworthy join date is available.
+      </p>
+    </section>
+
+    <section class="card" id="checker">
+      <form id="form" novalidate>
+        <div class="stack">
+          <div>
+            <label for="username">ROBLOX USERNAME</label>
+            <input id="username" name="username" autocomplete="off" autocapitalize="off" spellcheck="false"
+                   maxlength="20" placeholder="e.g. HENGGOLIVER" required />
+          </div>
+          <div>
+            <label for="communityLink">COMMUNITY LINK</label>
+            <input id="communityLink" name="communityLink" type="url" inputmode="url" autocomplete="off"
+                   autocapitalize="off" spellcheck="false" maxlength="300"
+                   placeholder="https://www.roblox.com/communities/..." required />
+          </div>
+        </div>
+        <button id="submit" type="submit">Check Eligibility</button>
+      </form>
+
+      <div class="result" id="result" aria-live="polite"></div>
+    </section>
+
+    <section class="card" id="about">
+      <div class="eyebrow">How it works</div>
+      <h2>Membership check</h2>
+      <p class="muted">
+        Paste any public Roblox community link (<code>roblox.com/communities/…</code> or
+        <code>roblox.com/groups/…</code>). The server resolves the username, reads the account's
+        public community memberships from Roblox, and confirms whether it belongs to that community,
+        along with its current role and rank.
+      </p>
+      <p class="muted">
+        Roblox's public endpoints do not show when a member joined. If the site owner has set up
+        an optional Roblox Open Cloud key that can read this community, the server also fetches the
+        join time and estimates when the configured membership-age requirement is met.
+        Otherwise no join date is shown. It is never guessed.
+      </p>
+      <p class="notice" id="disclaimer">
+        This checker only verifies membership information and estimates the configured membership-age
+        requirement when Roblox provides a trustworthy join timestamp. Roblox may apply additional payout
+        restrictions.
+      </p>
+      <p class="notice">This tool is not affiliated with Roblox.</p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">© 2026 HENGGOLIVER • Independent Roblox utility</div>
+  </footer>
+
+  <script>
+    const form = document.getElementById("form");
+    const result = document.getElementById("result");
+    const submit = document.getElementById("submit");
+    const UNAVAILABLE = "Checker service is unavailable. Please try again.";
+    const DISCLAIMER = document.getElementById("disclaimer").textContent.trim().replace(/\s+/g, " ");
+
+    function esc(value) {
+      return String(value ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#39;");
+    }
+
+    function fmtDate(iso) {
+      const d = new Date(iso);
+      if (Number.isNaN(d.getTime())) return "—";
+      return new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(d);
+    }
+
+    function plural(n, word) {
+      return `${n} ${word}${n === 1 ? "" : "s"}`;
+    }
+
+    function detail(label, value) {
+      return `<div class="detail"><small>${esc(label)}</small><strong>${esc(value)}</strong></div>`;
+    }
+
+    function verifiedText(v) {
+      return v === true ? "Yes" : v === false ? "No" : "Unavailable";
+    }
+
+    function showError(message) {
+      result.className = "result show";
+      result.innerHTML = `
+        <div class="status bad">Check Failed</div>
+        <div class="error">${esc(message)}</div>
+      `;
+    }
+
+    // Calls the API and only trusts the body when it really is JSON from our server.
+    async function callChecker(payload) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 25000);
+      let response;
+      try {
+        response = await fetch("/api/check", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Accept": "application/json" },
+          body: JSON.stringify(payload),
+          signal: controller.signal
+        });
+      } catch {
+        throw new Error(UNAVAILABLE);
+      } finally {
+        clearTimeout(timer);
+      }
+
+      const type = (response.headers.get("content-type") || "").toLowerCase();
+      if (!type.includes("application/json")) throw new Error(UNAVAILABLE);
+
+      let data;
+      try {
+        data = await response.json();
+      } catch {
+        throw new Error(UNAVAILABLE);
+      }
+      if (!data || typeof data !== "object") throw new Error(UNAVAILABLE);
+
+      if (response.ok && data.ok === true) return data;
+
+      // Show our own validation messages (bad input, unknown user/community, rate limit).
+      // Anything else (404, 5xx, unexpected) gets the generic message.
+      const friendly = [400, 422, 429].includes(response.status) && typeof data.error === "string";
+      throw new Error(friendly ? data.error : UNAVAILABLE);
+    }
+
+    function render(data) {
+      const user = data.user || {};
+      const community = data.community || {};
+      const m = data.membership || {};
+      const disclaimer = `<div class="notice">${esc(data.disclaimer || DISCLAIMER)}</div>`;
+
+      const baseDetails =
+        detail("Roblox username", user.name) +
+        detail("Display name", user.displayName || "Unavailable") +
+        detail("User ID", user.id) +
+        detail("Community", community.name) +
+        detail("Community ID", community.id) +
+        detail("Verified community", verifiedText(community.verified));
+
+      if (!data.member) {
+        return `
+          <div class="status bad">Not a Member</div>
+          <div class="muted">This account is not currently a member of this community.</div>
+          <div class="details">${baseDetails}${detail("Member", "No")}</div>
+          ${disclaimer}
+        `;
+      }
+
+      const memberDetails =
+        detail("Member", "Yes") +
+        detail("Current role", m.role || "Unavailable") +
+        detail("Current rank", m.rank ?? "Unavailable");
+
+      if (!m.joinTimeAvailable) {
+        return `
+          <div class="status ok">Member Confirmed</div>
+          <div class="muted">Member confirmed. Exact join date is unavailable, so membership-age eligibility cannot currently be calculated.</div>
+          <div class="details">${baseDetails}${memberDetails}</div>
+          ${disclaimer}
+        `;
+      }
+
+      const r = m.remaining || { days: 0, hours: 0 };
+      const remainingText = m.requirementMet
+        ? "None (requirement met)"
+        : `${plural(r.days, "day")}, ${plural(r.hours, "hour")}`;
+      const periodLabel = m.waitPeriodType === "verified" ? "verified community" : "standard community";
+
+      return `
+        <div class="status ${m.requirementMet ? "ok" : "wait"}">
+          ${m.requirementMet ? "Membership Requirement Met" : "Not Eligible Yet"}
+        </div>
+        <div class="muted">${m.requirementMet
+          ? "This account meets the configured membership-age requirement."
+          : `Estimated time remaining: ${esc(remainingText)}.`}</div>
+        <div class="details">
+          ${baseDetails}${memberDetails}
+          ${detail("Joined", fmtDate(m.joinedAt))}
+          ${detail("Wait period", `${plural(m.waitDays, "day")} (${periodLabel})`)}
+          ${detail("Estimated eligible date", fmtDate(m.eligibleAt))}
+          ${detail("Remaining", remainingText)}
+        </div>
+        ${disclaimer}
+      `;
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const username = document.getElementById("username").value.trim();
+      const communityLink = document.getElementById("communityLink").value.trim();
+
+      if (!username || !communityLink) {
+        showError("Enter a Roblox username and a Roblox community link.");
+        return;
+      }
+
+      result.className = "result show";
+      result.innerHTML = '<div class="status">Checking…</div><div class="muted">Contacting Roblox.</div>';
+      submit.disabled = true;
+
+      try {
+        result.innerHTML = render(await callChecker({ username, communityLink }));
+      } catch (error) {
+        showError(error instanceof Error && error.message ? error.message : UNAVAILABLE);
+      } finally {
+        submit.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
