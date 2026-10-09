@@ -117,7 +117,6 @@
       <div class="navright">
         <div class="navlinks">
           <a href="#checker">Checker</a>
-          <a href="#about">How it works</a>
         </div>
         <a class="discord" href="https://discord.gg/EuVpZbJeK" target="_blank" rel="noopener noreferrer">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.32 4.37A19.8 19.8 0 0 0 15.4 2.85a.07.07 0 0 0-.08.04c-.21.38-.45.87-.61 1.25a18.3 18.3 0 0 0-5.43 0 12.6 12.6 0 0 0-.62-1.25.08.08 0 0 0-.08-.04 19.7 19.7 0 0 0-4.92 1.52.07.07 0 0 0-.03.03C.53 9.05-.32 13.58.1 18.06a.08.08 0 0 0 .03.06 19.9 19.9 0 0 0 5.99 3.03.08.08 0 0 0 .08-.03c.46-.63.87-1.3 1.23-2a.08.08 0 0 0-.04-.1 13.1 13.1 0 0 1-1.87-.9.08.08 0 0 1 0-.13l.37-.29a.07.07 0 0 1 .08-.01c3.93 1.79 8.18 1.79 12.06 0a.07.07 0 0 1 .08 0l.37.3a.08.08 0 0 1 0 .13c-.6.35-1.22.65-1.87.9a.08.08 0 0 0-.04.1c.36.7.78 1.36 1.23 2a.08.08 0 0 0 .08.03 19.8 19.8 0 0 0 6-3.03.08.08 0 0 0 .03-.05c.5-5.18-.84-9.67-3.55-13.66a.06.06 0 0 0-.03-.03zM8.02 15.33c-1.18 0-2.16-1.09-2.16-2.42s.96-2.42 2.16-2.42c1.21 0 2.18 1.1 2.16 2.42 0 1.33-.96 2.42-2.16 2.42zm7.97 0c-1.18 0-2.15-1.09-2.15-2.42s.95-2.42 2.15-2.42c1.21 0 2.18 1.1 2.16 2.42 0 1.33-.95 2.42-2.16 2.42z"/></svg>
@@ -158,34 +157,11 @@
 
       <div class="result" id="result" aria-live="polite"></div>
     </section>
-
-    <section class="card" id="about">
-      <div class="eyebrow">How it works</div>
-      <h2>Membership check</h2>
-      <p class="muted">
-        Paste any public Roblox community link (<code>roblox.com/communities/…</code> or
-        <code>roblox.com/groups/…</code>). The server resolves the username, reads the account's
-        public community memberships from Roblox, and confirms whether it belongs to that community,
-        along with its current role and rank.
-      </p>
-      <p class="muted">
-        Roblox's public endpoints do not show when a member joined. If the site owner has set up
-        an optional Roblox Open Cloud key that can read this community, the server also fetches the
-        join time and estimates when the configured membership-age requirement is met.
-        Otherwise no join date is shown. It is never guessed.
-      </p>
-      <p class="notice" id="disclaimer">
-        This checker only verifies membership information and estimates the configured membership-age
-        requirement when Roblox provides a trustworthy join timestamp. Roblox may apply additional payout
-        restrictions.
-      </p>
-      <p class="notice">This tool is not affiliated with Roblox.</p>
-    </section>
   </main>
 
   <footer>
     <div class="wrap">
-      © 2026 HENGGOLIVER • Independent Roblox utility •
+      © 2026 HENGGOLIVER • Independent Roblox utility • Not affiliated with Roblox •
       <a class="green" href="https://discord.gg/EuVpZbJeK" target="_blank" rel="noopener noreferrer">Discord</a>
     </div>
   </footer>
@@ -195,7 +171,9 @@
     const result = document.getElementById("result");
     const submit = document.getElementById("submit");
     const UNAVAILABLE = "Checker service is unavailable. Please try again.";
-    const DISCLAIMER = document.getElementById("disclaimer").textContent.trim().replace(/\s+/g, " ");
+    const DISCLAIMER =
+      "This checker only verifies membership information and estimates the configured membership-age " +
+      "requirement when Roblox provides a trustworthy join timestamp. Roblox may apply additional payout restrictions.";
 
     function esc(value) {
       return String(value ?? "")
