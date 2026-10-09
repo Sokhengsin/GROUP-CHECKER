@@ -298,9 +298,20 @@ async function getOpenCloudJoinTime(groupId, userId) {
       const date = membership?.createTime ? new Date(membership.createTime) : null;
       if (date && !Number.isNaN(date.getTime()) && date.getTime() <= Date.now()) {
         joinedAt = date;
+      } else {
+        console.warn(`Open Cloud: HTTP ${res.status} for group ${groupId}, but no createTime was returned.`);
       }
+    } else {
+      // Log only the status and Roblox's own message, never the API key.
+      const reason = String(res.body?.message ?? res.body?.code ?? "no details").slice(0, 200).replace(/\.$/, "");
+      const hint =
+        res.status === 401 || res.status === 403
+          ? " Check that ROBLOX_API_KEY is a user-owned API key with group:read access to this group."
+          : "";
+      console.warn(`Open Cloud: HTTP ${res.status} for group ${groupId}: ${reason}.${hint}`);
     }
-  } catch {
+  } catch (error) {
+    console.warn(`Open Cloud: request failed for group ${groupId}: ${error?.message || "unknown error"}`);
     joinedAt = null;
   }
 
