@@ -410,6 +410,9 @@ app.post("/api/check", rateLimit, async (req, res) => {
 const TRACKER_DATA_FILE = path.join(process.env.TRACKER_DATA_DIR || path.join(__dirname, "data"), "tracker.json");
 app.use("/api/tracker", createTrackerRouter({ resolveUsername, cleanUsername, dataFile: TRACKER_DATA_FILE }));
 
+// /admin is the same page with the tracker tabs shown (the API still requires ADMIN_TOKEN).
+app.get("/admin", (_req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
+
 // Any other /api route returns JSON, never the HTML 404 page.
 app.use("/api", (_req, res) => {
   res.status(404).json({ ok: false, error: "Not found." });

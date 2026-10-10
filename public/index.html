@@ -717,7 +717,7 @@
       });
 
       function revealTabsIfAdmin() {
-        if (location.hash === "#admin" || token) tabsEl.hidden = false;
+        if (location.hash === "#admin" || location.pathname.replace(/\/+$/, "") === "/admin" || token) tabsEl.hidden = false;
       }
       window.addEventListener("hashchange", revealTabsIfAdmin);
       revealTabsIfAdmin();
