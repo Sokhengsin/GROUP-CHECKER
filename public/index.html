@@ -98,7 +98,67 @@
     .notice{margin-top:18px;color:#8f8f8f;font-size:13px;line-height:1.6}
     .error{color:#ff8585}
     footer{border-top:1px solid var(--line);margin-top:70px;padding:30px 0 45px;color:#777;font-size:13px;text-align:center}
+
+    /* ---- admin tabs (Robux Transfer Limit tracker) ---- */
+    .tabs{display:flex;gap:8px;overflow-x:auto;padding:4px 0 2px;margin-top:10px;scrollbar-width:thin}
+    [hidden]{display:none !important}
+    .tab{
+      width:auto;margin:0;flex:0 0 auto;padding:10px 16px;border-radius:999px;font-size:14px;
+      background:#0b0b0b;color:#bdbdbd;border:1px solid var(--line);font-weight:800;
+    }
+    .tab:hover{background:#141414;color:#fff}
+    .tab.active{background:var(--green);color:#001b08;border-color:var(--green)}
+    select,textarea{
+      width:100%;border:1px solid #2b2b2b;border-radius:12px;background:#030303;color:#fff;
+      padding:14px;font-size:16px;outline:none;font-family:inherit;
+    }
+    select:focus,textarea:focus{border-color:var(--green)}
+    textarea{min-height:80px;resize:vertical}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .btn-sm{width:auto;margin:0;padding:8px 12px;font-size:13px;border-radius:10px}
+    .btn-ghost{background:#141414;color:#ddd;border:1px solid #2b2b2b}
+    .btn-ghost:hover{background:#1d1d1d}
+    .btn-danger{background:#2a0b0b;color:#ff8585;border:1px solid #4a1515}
+    .btn-danger:hover{background:#3a1010}
+    .check{display:flex;align-items:center;gap:10px;font-weight:700;font-size:14px;margin:14px 0 0}
+    .check input{width:18px;height:18px;accent-color:var(--green)}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;font-weight:800;font-size:13px;border:1px solid}
+    .pill.gray{color:#d4d4d4;border-color:#333;background:#0f0f0f}
+    .pill.amber{color:var(--amber);border-color:#4a3510;background:#140e03}
+    .pill.green{color:var(--green);border-color:#14532d;background:#03140a}
+    .sender-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+    .sender-head img,.avatar-sm{width:44px;height:44px;border-radius:12px;border:1px solid #2b2b2b;background:#111;object-fit:cover}
+    .avatar-sm{width:32px;height:32px;border-radius:9px;vertical-align:middle}
+    .badge{margin-left:auto;font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px;border:1px solid #2b2b2b;color:#aaa}
+    .badge.on{color:var(--green);border-color:#14532d}
+    .meters{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+    .meter{border:1px solid #202020;border-radius:12px;padding:14px;background:#080808}
+    .meter small{display:block;color:#888;margin-bottom:6px}
+    .meter .nums{font-size:20px;font-weight:900}
+    .bar{height:8px;border-radius:99px;background:#1a1a1a;margin:10px 0 8px;overflow:hidden}
+    .bar span{display:block;height:100%;background:var(--green)}
+    .bar span.warn{background:var(--amber)}
+    .bar span.full{background:var(--red)}
+    .release{margin-top:10px;font-size:14px;color:#d4d4d4}
+    .release b{color:var(--green)}
+    .table-wrap{overflow-x:auto;margin-top:16px;border:1px solid var(--line);border-radius:12px}
+    table{width:100%;border-collapse:collapse;font-size:14px;min-width:900px}
+    th,td{padding:10px 12px;border-bottom:1px solid #1a1a1a;text-align:left;vertical-align:middle}
+    th{color:#888;font-size:12px;text-transform:uppercase;letter-spacing:.6px;background:#070707}
+    td select{padding:7px 9px;font-size:13px;border-radius:9px;width:auto}
+    .row-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+    .sender-row{border:1px solid #202020;border-radius:14px;padding:16px;background:#070707;margin-top:14px}
+    .sender-row .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}
+    .sender-row label{font-size:12px}
+    .sender-row input,.sender-row select{padding:10px 12px;font-size:14px}
+    .msg{margin-top:14px;font-size:14px;line-height:1.6}
+    .msg.ok{color:var(--green)}
+    .msg.bad{color:#ff8585}
+    .toolbar{display:flex;gap:12px;flex-wrap:wrap;align-items:end}
+    .toolbar > div{flex:1 1 180px}
+
     @media(max-width:650px){
+      .grid2,.meters,.sender-row .grid4{grid-template-columns:1fr}
       .details{grid-template-columns:1fr}
       .navlinks{display:none}
       .hero{padding-top:58px}
@@ -137,7 +197,27 @@
       </p>
     </section>
 
-    <section class="card" id="checker">
+    <!-- Admin tabs stay hidden for visitors. Open /#admin to show them. -->
+    <div class="tabs" id="tabs" role="tablist" hidden>
+      <button class="tab active" type="button" data-tab="checker">Group Checker</button>
+      <button class="tab" type="button" data-tab="limit">Robux Limit</button>
+      <button class="tab" type="button" data-tab="record">Record Send</button>
+      <button class="tab" type="button" data-tab="history">History</button>
+      <button class="tab" type="button" data-tab="senders">Sending Accounts</button>
+    </div>
+
+    <section class="card admin-only" id="adminLogin" hidden>
+      <div class="eyebrow">Admin</div>
+      <h2>Unlock tracker</h2>
+      <form id="loginForm" novalidate>
+        <label for="adminToken">ADMIN TOKEN</label>
+        <input id="adminToken" type="password" autocomplete="current-password" required />
+        <button type="submit">Unlock</button>
+      </form>
+      <div class="msg bad" id="loginMsg"></div>
+    </section>
+
+    <section class="card" id="checker" data-panel="checker">
       <form id="form" novalidate>
         <div class="stack">
           <div>
@@ -157,6 +237,177 @@
 
       <div class="result" id="result" aria-live="polite"></div>
     </section>
+
+    <!-- ROBUX LIMIT -->
+    <div data-panel="limit" hidden>
+      <section class="card">
+        <div class="eyebrow">Roblox Reported Limit</div>
+        <h2>Official Roblox quota</h2>
+        <div id="robloxLimit"><span class="pill gray">⚪ Checking…</span></div>
+      </section>
+
+      <section class="card">
+        <div class="toolbar">
+          <div>
+            <label for="autoFallback">AUTO TIER ASSUMES</label>
+            <select id="autoFallback">
+              <option value="standard">Standard (500 / 1,000 R$)</option>
+              <option value="higher">Higher (5,000 / 10,000 R$)</option>
+            </select>
+          </div>
+          <button class="btn-sm btn-ghost" type="button" id="saveFallback" style="padding:14px 16px">Save</button>
+          <button class="btn-sm btn-ghost" type="button" id="refreshLimit" style="padding:14px 16px">Refresh</button>
+        </div>
+        <p class="notice">Roblox does not report the tier, so AUTO accounts use this configured fallback.
+          Usage is rolling: last 24 hours and last 30 days, with no midnight or monthly reset.</p>
+        <div class="msg" id="limitMsg"></div>
+      </section>
+
+      <div id="limitSenders"></div>
+    </div>
+
+    <!-- RECORD SEND -->
+    <section class="card" data-panel="record" hidden>
+      <div class="eyebrow">Record Send</div>
+      <h2>Record a Robux transfer</h2>
+      <form id="recordForm" novalidate>
+        <div class="stack">
+          <div>
+            <label for="recSender">SENDING ACCOUNT</label>
+            <select id="recSender" required></select>
+            <div class="notice" id="recSenderInfo" style="margin-top:8px"></div>
+          </div>
+          <div class="grid2">
+            <div>
+              <label for="recReceiver">RECEIVER ROBLOX USERNAME</label>
+              <input id="recReceiver" maxlength="20" autocomplete="off" autocapitalize="off" spellcheck="false" required />
+            </div>
+            <div>
+              <label for="recAmount">ROBUX AMOUNT</label>
+              <input id="recAmount" type="number" min="1" step="1" inputmode="numeric" required />
+            </div>
+          </div>
+          <div class="grid2">
+            <div>
+              <label for="recOrder">ORDER ID</label>
+              <input id="recOrder" maxlength="80" autocomplete="off" required />
+            </div>
+            <div>
+              <label for="recStatus">STATUS</label>
+              <select id="recStatus">
+                <option value="completed">Completed</option>
+                <option value="pending">Pending</option>
+                <option value="failed">Failed</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid2">
+            <div>
+              <label for="recSentAt">DATE / TIME (EMPTY = NOW)</label>
+              <input id="recSentAt" type="datetime-local" />
+            </div>
+            <div>
+              <label for="recDiscord">DISCORD ID (OPTIONAL)</label>
+              <input id="recDiscord" inputmode="numeric" maxlength="22" autocomplete="off" />
+            </div>
+          </div>
+          <div>
+            <label for="recStaff">STAFF (OPTIONAL)</label>
+            <input id="recStaff" maxlength="60" autocomplete="off" />
+          </div>
+          <div>
+            <label for="recNotes">NOTES (OPTIONAL)</label>
+            <textarea id="recNotes" maxlength="500"></textarea>
+          </div>
+        </div>
+        <label class="check"><input type="checkbox" id="recOverride" /> Allow over configured limit</label>
+        <button type="submit" id="recSubmit">Record Send</button>
+      </form>
+      <div class="msg" id="recordMsg"></div>
+    </section>
+
+    <!-- HISTORY -->
+    <section class="card" data-panel="history" hidden>
+      <div class="eyebrow">History</div>
+      <h2>Recorded sends</h2>
+      <div class="toolbar">
+        <div>
+          <label for="histSender">SENDER</label>
+          <select id="histSender"><option value="">All senders</option></select>
+        </div>
+        <div>
+          <label for="histStatus">STATUS</label>
+          <select id="histStatus">
+            <option value="">All statuses</option>
+            <option value="completed">Completed</option>
+            <option value="pending">Pending</option>
+            <option value="failed">Failed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+        <button class="btn-sm btn-ghost" type="button" id="histRefresh" style="padding:14px 16px">Refresh</button>
+      </div>
+      <div class="msg" id="histMsg"></div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Date</th><th>Receiver</th><th>Amount</th><th>Sender</th><th>Order</th><th>Discord</th><th>Staff</th><th>Status</th><th>Notes</th><th></th></tr>
+          </thead>
+          <tbody id="histBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SENDING ACCOUNTS -->
+    <div data-panel="senders" hidden>
+      <section class="card">
+        <div class="eyebrow">Sending Accounts</div>
+        <h2>Add sending account</h2>
+        <form id="senderForm" novalidate>
+          <div class="grid2">
+            <div>
+              <label for="sLabel">LABEL</label>
+              <input id="sLabel" maxlength="40" placeholder="e.g. ALT 1" required />
+            </div>
+            <div>
+              <label for="sUsername">ROBLOX USERNAME</label>
+              <input id="sUsername" maxlength="20" autocomplete="off" autocapitalize="off" spellcheck="false" required />
+            </div>
+          </div>
+          <div class="grid2" style="margin-top:16px">
+            <div>
+              <label for="sTier">CONFIGURED TIER</label>
+              <select id="sTier">
+                <option value="auto">Auto</option>
+                <option value="standard">Standard (500 / 1,000 R$)</option>
+                <option value="higher">Higher (5,000 / 10,000 R$)</option>
+                <option value="custom">Custom</option>
+              </select>
+            </div>
+            <div class="grid2" id="sCustom" hidden>
+              <div>
+                <label for="sDaily">DAILY LIMIT</label>
+                <input id="sDaily" type="number" min="1" step="1" inputmode="numeric" />
+              </div>
+              <div>
+                <label for="sMonthly">30-DAY LIMIT</label>
+                <input id="sMonthly" type="number" min="1" step="1" inputmode="numeric" />
+              </div>
+            </div>
+          </div>
+          <label class="check"><input type="checkbox" id="sActive" checked /> Active</label>
+          <button type="submit" id="sSubmit">Add Sending Account</button>
+        </form>
+        <div class="msg" id="senderMsg"></div>
+      </section>
+
+      <section class="card">
+        <h2>Accounts</h2>
+        <p class="notice" style="margin-top:0">Limits here are a <b>Configured Limit</b>, <b>NOT Roblox Confirmed</b>.</p>
+        <div id="senderList"></div>
+      </section>
+    </div>
   </main>
 
   <footer>
@@ -330,6 +581,474 @@
         submit.disabled = false;
       }
     });
+  </script>
+
+  <script>
+    // Robux Transfer Limit tracker (admin). Separate from the group checker above.
+    (() => {
+      const TOKEN_KEY = "hgAdminToken";
+      const $ = (id) => document.getElementById(id);
+      const tabsEl = $("tabs");
+      const loginCard = $("adminLogin");
+      const panels = document.querySelectorAll("[data-panel]");
+
+      let token = "";
+      try { token = sessionStorage.getItem(TOKEN_KEY) || ""; } catch { /* storage blocked */ }
+      let currentTab = "checker";
+      let summary = null;
+
+      function saveToken(value) {
+        token = value;
+        try {
+          if (value) sessionStorage.setItem(TOKEN_KEY, value);
+          else sessionStorage.removeItem(TOKEN_KEY);
+        } catch { /* keep it in memory only */ }
+      }
+
+      /* ---------- formatting ---------- */
+
+      const nf = new Intl.NumberFormat("en-US");
+      const robux = (n) => `${nf.format(n)} R$`;
+      const TIER_NAMES = { auto: "Auto", standard: "Standard", higher: "Higher", custom: "Custom" };
+      const STATUS_NAMES = { completed: "Completed", pending: "Pending", failed: "Failed", cancelled: "Cancelled" };
+
+      function fmtDuration(ms) {
+        const mins = Math.max(0, Math.ceil(ms / 60000));
+        const d = Math.floor(mins / 1440), h = Math.floor((mins % 1440) / 60), m = mins % 60;
+        if (d) return `${d}d ${h}h`;
+        if (h) return `${h}h ${m}m`;
+        return `${m}m`;
+      }
+
+      function fmtWhen(iso) {
+        const d = new Date(iso);
+        const date = new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric" }).format(d);
+        const time = new Intl.DateTimeFormat(undefined, { hour: "numeric", minute: "2-digit" }).format(d);
+        return `${date} at ${time}`;
+      }
+
+      function releaseText(release) {
+        if (!release) return "Nothing to release (no counted sends in this window)";
+        const ms = new Date(release.at).getTime() - Date.now();
+        const when = ms < 24 * 3600000 ? `in ${fmtDuration(ms)} (${fmtWhen(release.at)})` : `on ${fmtWhen(release.at)}`;
+        return `<b>+${esc(robux(release.amount))}</b> ${esc(when)}`;
+      }
+
+      function avatar(url, cls) {
+        return url ? `<img class="${cls}" src="${esc(url)}" alt="" loading="lazy" referrerpolicy="no-referrer" />` : "";
+      }
+
+      function setMsg(el, text, ok) {
+        el.className = `msg ${ok ? "ok" : "bad"}`;
+        el.textContent = text || "";
+      }
+
+      /* ---------- api ---------- */
+
+      async function api(path, options = {}) {
+        let response;
+        try {
+          response = await fetch(`/api/tracker${path}`, {
+            ...options,
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${token}`,
+              ...(options.body ? { "Content-Type": "application/json" } : {})
+            }
+          });
+        } catch {
+          throw new Error("Server unreachable. Please try again.");
+        }
+        let data = null;
+        try { data = await response.json(); } catch { /* not JSON */ }
+        if (response.status === 401) {
+          saveToken("");
+          showLogin(data?.error || "Admin token is missing or incorrect.");
+          throw new Error(data?.error || "Admin token is missing or incorrect.");
+        }
+        if (!response.ok || !data?.ok) {
+          const err = new Error(data?.error || "Tracker request failed.");
+          err.data = data;
+          throw err;
+        }
+        return data;
+      }
+
+      /* ---------- tabs & login ---------- */
+
+      function showLogin(message) {
+        loginCard.hidden = false;
+        panels.forEach((p) => { if (p.dataset.panel !== "checker") p.hidden = true; });
+        $("loginMsg").textContent = message || "";
+      }
+
+      function selectTab(name) {
+        currentTab = name;
+        document.querySelectorAll(".tab").forEach((t) => t.classList.toggle("active", t.dataset.tab === name));
+        panels.forEach((p) => { p.hidden = p.dataset.panel !== name; });
+        loginCard.hidden = true;
+        if (name === "checker") return;
+        if (!token) return showLogin("");
+        loadTab(name);
+      }
+
+      function loadTab(name) {
+        const loaders = { limit: loadLimit, record: loadRecord, history: loadHistory, senders: loadSenders };
+        loaders[name]?.().catch(() => { /* messages are shown by each loader */ });
+      }
+
+      tabsEl.addEventListener("click", (event) => {
+        const tab = event.target.closest(".tab");
+        if (tab) selectTab(tab.dataset.tab);
+      });
+
+      $("loginForm").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const value = $("adminToken").value.trim();
+        if (!value) return;
+        saveToken(value);
+        try {
+          await api("/roblox-limit");
+          $("adminToken").value = "";
+          selectTab(currentTab === "checker" ? "limit" : currentTab);
+        } catch (error) {
+          $("loginMsg").textContent = error.message;
+        }
+      });
+
+      function revealTabsIfAdmin() {
+        if (location.hash === "#admin" || token) tabsEl.hidden = false;
+      }
+      window.addEventListener("hashchange", revealTabsIfAdmin);
+      revealTabsIfAdmin();
+
+      /* ---------- shared data ---------- */
+
+      async function fetchSummary() {
+        summary = await api("/summary");
+        return summary;
+      }
+
+      function senderOptions(select, { activeOnly, includeAll }) {
+        const keep = select.value;
+        const senders = (summary?.senders || []).filter((s) => !activeOnly || s.active);
+        select.innerHTML =
+          (includeAll ? '<option value="">All senders</option>' : "") +
+          (senders.length ? "" : (includeAll ? "" : '<option value="">No active sending accounts. Add one first.</option>')) +
+          senders.map((s) => `<option value="${esc(s.userId)}">${esc(s.label)} (@${esc(s.username)})</option>`).join("");
+        if ([...select.options].some((o) => o.value === keep)) select.value = keep;
+      }
+
+      /* ---------- robux limit ---------- */
+
+      function tierLine(s) {
+        if (s.assumedFromAuto) return `Auto → ${TIER_NAMES[s.effectiveTier]} assumed`;
+        return TIER_NAMES[s.tier];
+      }
+
+      function meter(title, w) {
+        const pct = w.limit ? Math.min(100, (w.used / w.limit) * 100) : 0;
+        const cls = w.used >= w.limit ? "full" : pct >= 80 ? "warn" : "";
+        return `
+          <div class="meter">
+            <small>${esc(title)}</small>
+            <div class="nums">${esc(nf.format(w.used))} / ${esc(robux(w.limit))}</div>
+            <div class="bar"><span class="${cls}" style="width:${pct.toFixed(1)}%"></span></div>
+            <div class="${w.overBy ? "error" : "muted"}">${w.overBy
+              ? `Over configured limit by ${esc(robux(w.overBy))}`
+              : `Remaining: ${esc(robux(w.remaining))}`}</div>
+          </div>`;
+      }
+
+      function renderLimit() {
+        const r = summary.robloxReportedLimit;
+        $("robloxLimit").innerHTML = r.available
+          ? `<span class="pill green">🟢 Roblox Confirmed</span>`
+          : `<span class="pill gray">⚪ Not available through Open Cloud API</span>
+             <p class="notice">${esc(r.reason)}</p>`;
+        $("autoFallback").value = summary.settings.autoFallbackTier;
+
+        const senders = summary.senders;
+        $("limitSenders").innerHTML = senders.length ? senders.map((s) => `
+          <section class="card">
+            <div class="sender-head">
+              ${avatar(s.avatarUrl, "")}
+              <div>
+                <strong>${esc(s.label)}</strong>
+                <div class="muted" style="font-size:13px">@${esc(s.username)} · ID ${esc(s.userId)}</div>
+              </div>
+              <span class="badge ${s.active ? "on" : ""}">${s.active ? "Active" : "Disabled"}</span>
+            </div>
+            <div style="margin-top:14px"><span class="pill amber">🟡 Configured Limit · NOT Roblox Confirmed</span></div>
+            <div class="release">Configured tier: <b>${esc(tierLine(s))}</b> · Daily ${esc(robux(s.dailyLimit))} · 30-day ${esc(robux(s.monthlyLimit))}</div>
+            <div class="meters">
+              ${meter("Last 24 Hours", s.last24h)}
+              ${meter("Last 30 Days", s.last30d)}
+            </div>
+            <div class="release">Next 24h availability: ${releaseText(s.last24h.nextRelease)}</div>
+            <div class="release">Next 30-day availability: ${releaseText(s.last30d.nextRelease)}</div>
+            <p class="notice">Estimated from recorded sends</p>
+          </section>`).join("")
+          : `<section class="card"><p class="muted">No sending accounts yet. Add one in the Sending Accounts tab.</p></section>`;
+      }
+
+      async function loadLimit() {
+        try {
+          await fetchSummary();
+          renderLimit();
+        } catch (error) {
+          setMsg($("limitMsg"), error.message, false);
+          throw error;
+        }
+      }
+
+      $("refreshLimit").addEventListener("click", () => loadLimit().catch(() => {}));
+      $("saveFallback").addEventListener("click", async () => {
+        try {
+          await api("/settings", { method: "PUT", body: JSON.stringify({ autoFallbackTier: $("autoFallback").value }) });
+          setMsg($("limitMsg"), "Saved.", true);
+          await loadLimit();
+        } catch (error) {
+          setMsg($("limitMsg"), error.message, false);
+        }
+      });
+
+      // Keep countdowns fresh while the tab is open.
+      setInterval(() => {
+        if (currentTab === "limit" && token && summary && !document.hidden) renderLimit();
+      }, 30000);
+      setInterval(() => {
+        if (currentTab === "limit" && token && !document.hidden) loadLimit().catch(() => {});
+      }, 120000);
+
+      /* ---------- record send ---------- */
+
+      function renderSenderInfo() {
+        const s = (summary?.senders || []).find((x) => x.userId === $("recSender").value);
+        $("recSenderInfo").textContent = s
+          ? `Configured (not Roblox confirmed): 24h remaining ${robux(s.last24h.remaining)} · 30-day remaining ${robux(s.last30d.remaining)}`
+          : "";
+      }
+
+      async function loadRecord() {
+        try {
+          await fetchSummary();
+          senderOptions($("recSender"), { activeOnly: true });
+          renderSenderInfo();
+        } catch (error) {
+          setMsg($("recordMsg"), error.message, false);
+          throw error;
+        }
+      }
+
+      $("recSender").addEventListener("change", renderSenderInfo);
+
+      $("recordForm").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const sentAtRaw = $("recSentAt").value;
+        const payload = {
+          senderUserId: $("recSender").value,
+          receiverUsername: $("recReceiver").value.trim(),
+          amount: Number($("recAmount").value),
+          orderId: $("recOrder").value.trim(),
+          status: $("recStatus").value,
+          sentAt: sentAtRaw ? new Date(sentAtRaw).toISOString() : undefined,
+          discordId: $("recDiscord").value.trim() || undefined,
+          staff: $("recStaff").value.trim() || undefined,
+          notes: $("recNotes").value.trim() || undefined,
+          allowOverLimit: $("recOverride").checked
+        };
+        $("recSubmit").disabled = true;
+        try {
+          const { transfer: t } = await api("/transfers", { method: "POST", body: JSON.stringify(payload) });
+          const msg = $("recordMsg");
+          msg.className = "msg ok";
+          msg.innerHTML = `${avatar(t.receiver.avatarUrl, "avatar-sm")} Recorded ${esc(robux(t.amount))} to
+            <b>@${esc(t.receiver.username)}</b> (ID ${esc(t.receiver.userId)}) from ${esc(t.sender.label)} · order ${esc(t.orderId)}`;
+          ["recReceiver", "recAmount", "recOrder", "recSentAt", "recDiscord", "recNotes"].forEach((id) => { $(id).value = ""; });
+          $("recOverride").checked = false;
+          await loadRecord();
+        } catch (error) {
+          setMsg($("recordMsg"), error.message, false);
+        } finally {
+          $("recSubmit").disabled = false;
+        }
+      });
+
+      /* ---------- history ---------- */
+
+      async function loadHistory() {
+        try {
+          if (!summary) await fetchSummary();
+          senderOptions($("histSender"), { includeAll: true });
+          const params = new URLSearchParams({ limit: "500" });
+          if ($("histSender").value) params.set("sender", $("histSender").value);
+          if ($("histStatus").value) params.set("status", $("histStatus").value);
+          const { transfers } = await api(`/transfers?${params}`);
+          $("histBody").innerHTML = transfers.length ? transfers.map((t) => `
+            <tr data-id="${esc(t.id)}">
+              <td>${esc(fmtDate(t.sentAt))}</td>
+              <td>${avatar(t.receiver.avatarUrl, "avatar-sm")} <b>@${esc(t.receiver.username)}</b><div class="muted" style="font-size:12px">ID ${esc(t.receiver.userId)}</div></td>
+              <td><b>${esc(robux(t.amount))}</b></td>
+              <td>${esc(t.sender.label)}<div class="muted" style="font-size:12px">@${esc(t.sender.username)} · ${esc(t.sender.userId)}</div></td>
+              <td>${esc(t.orderId)}</td>
+              <td>${esc(t.discordId || "—")}</td>
+              <td>${esc(t.staff || "—")}</td>
+              <td><select data-action="status">${Object.entries(STATUS_NAMES).map(([v, label]) =>
+                `<option value="${v}"${v === t.status ? " selected" : ""}>${label}</option>`).join("")}</select></td>
+              <td style="max-width:220px;overflow-wrap:anywhere">${esc(t.notes || "—")}</td>
+              <td><button class="btn-sm btn-danger" type="button" data-action="delete">Delete</button></td>
+            </tr>`).join("")
+            : `<tr><td colspan="10" class="muted">No recorded sends.</td></tr>`;
+          setMsg($("histMsg"), "", true);
+        } catch (error) {
+          setMsg($("histMsg"), error.message, false);
+          throw error;
+        }
+      }
+
+      $("histRefresh").addEventListener("click", () => loadHistory().catch(() => {}));
+      $("histSender").addEventListener("change", () => loadHistory().catch(() => {}));
+      $("histStatus").addEventListener("change", () => loadHistory().catch(() => {}));
+
+      $("histBody").addEventListener("change", async (event) => {
+        const select = event.target.closest('select[data-action="status"]');
+        if (!select) return;
+        const id = select.closest("tr").dataset.id;
+        try {
+          await api(`/transfers/${encodeURIComponent(id)}`, { method: "PATCH", body: JSON.stringify({ status: select.value }) });
+          setMsg($("histMsg"), "Status updated.", true);
+          summary = null;
+        } catch (error) {
+          setMsg($("histMsg"), error.message, false);
+          loadHistory().catch(() => {});
+        }
+      });
+
+      $("histBody").addEventListener("click", async (event) => {
+        const button = event.target.closest('button[data-action="delete"]');
+        if (!button) return;
+        if (!confirm("Delete this recorded send? This cannot be undone.")) return;
+        const id = button.closest("tr").dataset.id;
+        try {
+          await api(`/transfers/${encodeURIComponent(id)}`, { method: "DELETE" });
+          summary = null;
+          await loadHistory();
+          setMsg($("histMsg"), "Deleted.", true);
+        } catch (error) {
+          setMsg($("histMsg"), error.message, false);
+        }
+      });
+
+      /* ---------- sending accounts ---------- */
+
+      $("sTier").addEventListener("change", () => { $("sCustom").hidden = $("sTier").value !== "custom"; });
+
+      function tierSelect(value) {
+        return Object.entries(TIER_NAMES).map(([v, label]) =>
+          `<option value="${v}"${v === value ? " selected" : ""}>${label}</option>`).join("");
+      }
+
+      function renderSenders() {
+        const senders = summary?.senders || [];
+        $("senderList").innerHTML = senders.length ? senders.map((s) => `
+          <div class="sender-row" data-user="${esc(s.userId)}">
+            <div class="sender-head">
+              ${avatar(s.avatarUrl, "")}
+              <div>
+                <strong>${esc(s.label)}</strong>
+                <div class="muted" style="font-size:13px">@${esc(s.username)} · ID ${esc(s.userId)}</div>
+              </div>
+              <span class="badge ${s.active ? "on" : ""}">${s.active ? "Active" : "Disabled"}</span>
+            </div>
+            <div class="release">Configured Limit (NOT Roblox Confirmed): <b>${esc(tierLine(s))}</b> · Daily ${esc(robux(s.dailyLimit))} · 30-day ${esc(robux(s.monthlyLimit))}</div>
+            <div class="grid4">
+              <div><label>LABEL</label><input data-field="label" maxlength="40" value="${esc(s.label)}" /></div>
+              <div><label>TIER</label><select data-field="tier">${tierSelect(s.tier)}</select></div>
+              <div><label>DAILY LIMIT</label><input data-field="dailyLimit" type="number" min="1" step="1" value="${esc(s.tier === "custom" ? s.dailyLimit : "")}" ${s.tier === "custom" ? "" : "disabled"} /></div>
+              <div><label>30-DAY LIMIT</label><input data-field="monthlyLimit" type="number" min="1" step="1" value="${esc(s.tier === "custom" ? s.monthlyLimit : "")}" ${s.tier === "custom" ? "" : "disabled"} /></div>
+            </div>
+            <label class="check"><input type="checkbox" data-field="active" ${s.active ? "checked" : ""} /> Active</label>
+            <div class="row-actions">
+              <button class="btn-sm" type="button" data-action="save">Save</button>
+              <button class="btn-sm btn-danger" type="button" data-action="delete">Delete</button>
+            </div>
+          </div>`).join("")
+          : `<p class="muted">No sending accounts yet.</p>`;
+      }
+
+      async function loadSenders() {
+        try {
+          await fetchSummary();
+          renderSenders();
+        } catch (error) {
+          setMsg($("senderMsg"), error.message, false);
+          throw error;
+        }
+      }
+
+      $("senderForm").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const tier = $("sTier").value;
+        const payload = {
+          label: $("sLabel").value.trim(),
+          username: $("sUsername").value.trim(),
+          tier,
+          active: $("sActive").checked,
+          ...(tier === "custom" ? { dailyLimit: Number($("sDaily").value), monthlyLimit: Number($("sMonthly").value) } : {})
+        };
+        $("sSubmit").disabled = true;
+        try {
+          const { sender } = await api("/senders", { method: "POST", body: JSON.stringify(payload) });
+          setMsg($("senderMsg"), `Added ${sender.label} (@${sender.username}, ID ${sender.userId}).`, true);
+          ["sLabel", "sUsername", "sDaily", "sMonthly"].forEach((id) => { $(id).value = ""; });
+          await loadSenders();
+        } catch (error) {
+          setMsg($("senderMsg"), error.message, false);
+        } finally {
+          $("sSubmit").disabled = false;
+        }
+      });
+
+      $("senderList").addEventListener("change", (event) => {
+        const tierEl = event.target.closest('select[data-field="tier"]');
+        if (!tierEl) return;
+        const row = tierEl.closest(".sender-row");
+        row.querySelectorAll('[data-field="dailyLimit"],[data-field="monthlyLimit"]').forEach((input) => {
+          input.disabled = tierEl.value !== "custom";
+        });
+      });
+
+      $("senderList").addEventListener("click", async (event) => {
+        const button = event.target.closest("button[data-action]");
+        if (!button) return;
+        const row = button.closest(".sender-row");
+        const userId = row.dataset.user;
+        const field = (name) => row.querySelector(`[data-field="${name}"]`);
+        try {
+          if (button.dataset.action === "delete") {
+            if (!confirm("Delete this sending account?")) return;
+            await api(`/senders/${encodeURIComponent(userId)}`, { method: "DELETE" });
+            setMsg($("senderMsg"), "Deleted.", true);
+          } else {
+            const tier = field("tier").value;
+            await api(`/senders/${encodeURIComponent(userId)}`, {
+              method: "PATCH",
+              body: JSON.stringify({
+                label: field("label").value.trim(),
+                tier,
+                active: field("active").checked,
+                ...(tier === "custom" ? { dailyLimit: Number(field("dailyLimit").value), monthlyLimit: Number(field("monthlyLimit").value) } : {})
+              })
+            });
+            setMsg($("senderMsg"), "Saved.", true);
+          }
+          await loadSenders();
+        } catch (error) {
+          setMsg($("senderMsg"), error.message, false);
+        }
+      });
+    })();
   </script>
 </body>
 </html>
