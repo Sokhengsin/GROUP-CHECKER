@@ -2,7 +2,6 @@ import express from "express";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
-import { createTrackerRouter } from "./tracker.js";
 
 dotenv.config();
 
@@ -405,10 +404,6 @@ app.post("/api/check", rateLimit, async (req, res) => {
     });
   }
 });
-
-// Robux Transfer Limit tracker (admin only). TRACKER_DATA_DIR lets a persistent volume hold the data.
-const TRACKER_DATA_FILE = path.join(process.env.TRACKER_DATA_DIR || path.join(__dirname, "data"), "tracker.json");
-app.use("/api/tracker", createTrackerRouter({ resolveUsername, cleanUsername, dataFile: TRACKER_DATA_FILE }));
 
 // Any other /api route returns JSON, never the HTML 404 page.
 app.use("/api", (_req, res) => {
